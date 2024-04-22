@@ -34,7 +34,9 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+], {
+  basename: import.meta.env.BASE_URL || "/top-name-card", 
+});
 export default function App() {
   return <RouterProvider router={router} />;
 }
