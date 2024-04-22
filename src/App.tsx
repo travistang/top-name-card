@@ -1,3 +1,4 @@
+import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "react-hot-toast";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
@@ -38,5 +39,9 @@ const router = createBrowserRouter([
   basename: import.meta.env.BASE_URL || "/top-name-card", 
 });
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <HelmetProvider>
+      <RouterProvider router={router} />
+    </HelmetProvider>
+  );
 }
