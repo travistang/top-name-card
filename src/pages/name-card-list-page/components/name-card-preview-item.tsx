@@ -28,7 +28,7 @@ const computePreviewStyle = (nameCard: NameCard) => {
         background: `radial-gradient(circle at right, #405DE6, #E1306C), radial-gradient(circle at top right, #FFDC80 0%, #F56040 50%, #833AB4 100%)`,
       };
     default:
-      return { backgroundColor: colors.gray[500] };
+      return { backgroundColor: colors.blue[500] };
   }
 };
 export const NameCardPreviewItem = ({

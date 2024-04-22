@@ -9,17 +9,18 @@ type Props = {
 };
 export const InstanceTextSection = ({ onDisplay }: Props) => {
   const [text, setText] = useState("");
-  const [backgroundColor, setBackgroundColor] = useState("");
-  const [color, setColor] = useState("");
+  const [isQRCode] = useState(false);
+  const [backgroundColor] = useState("");
+  const [color] = useState("");
   const onConfirm = () => {
     onDisplay({
       id: window.crypto.randomUUID(),
-      text,
+      text: !isQRCode ? text : "",
       textColor: color,
       backgroundColor,
       title: "",
       category: "other",
-      qrCode: "",
+      qrCode: isQRCode ? text : "",
     });
   };
   return (
@@ -29,11 +30,11 @@ export const InstanceTextSection = ({ onDisplay }: Props) => {
         className="col-span-5"
         value={text}
         onChange={setText}
-        label="Display text"
+        label="Instant text"
         placeholder="What would you like to say?"
       />
       <button
-        className="aspect-square self-end bg-green-500"
+        className="aspect-square self-end bg-green-500 max-w-32 flex-shrink-0 w-16"
         onClick={onConfirm}
         disabled={!text}
       >

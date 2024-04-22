@@ -42,7 +42,6 @@ export const NameCardListPage = () => {
     isLoading,
     mutate: refetch,
   } = useSWR("name-card", fetcher);
-  console.log({ nameCardsByCategories });
   const { trigger: deleteCard, isMutating: isDeleting } = useSWRMutation(
     "delete-name-card",
     deleter,

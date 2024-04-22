@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import {
   IconDefinition,
-  faContactBook,
+  faAddressCard,
 } from "@fortawesome/free-solid-svg-icons";
 import colors from "tailwindcss/colors";
 import { NameCard } from "./name-card";
@@ -33,6 +33,7 @@ export const computeNameCardColor = (
   color: string;
   qrIcon?: IconDefinition;
   qrIconColor?: string;
+  qrIconBackgroundColor?: string;
 } => {
   switch (nameCard.category) {
     case "facebook":
@@ -43,7 +44,8 @@ export const computeNameCardColor = (
         qrPaddingColor: "transparent",
         backgroundColor: "#4267B2",
         qrIcon: faFacebook,
-        qrIconColor: "#4267B2",
+        qrIconBackgroundColor: "#4267B2",
+        qrIconColor: "white",
       };
     case "whatsapp":
       return {
@@ -53,7 +55,8 @@ export const computeNameCardColor = (
         qrPaddingColor: "transparent",
         color: "white",
         qrIcon: faWhatsapp,
-        qrIconColor: "#25D366",
+        qrIconColor: "white",
+        qrIconBackgroundColor: "#25D366",
       };
     case "instagram":
       return {
@@ -62,19 +65,21 @@ export const computeNameCardColor = (
         qrColor: "white",
         qrBackgroundColor: "transparent",
         qrPaddingColor: "transparent",
-        qrIconColor: "#E1306C",
+        qrIconColor: "white",
+        qrIconBackgroundColor: "white",
         color: "white",
       };
     case "business":
     case "phone-number":
       return {
-        qrIcon: faContactBook,
+        qrIcon: faAddressCard,
         backgroundColor: "rgb(154, 122, 75)",
         color: "black",
         qrBackgroundColor: "transparent",
         qrPaddingColor: "transparent",
         qrColor: "white",
-        qrIconColor: "rgb(154, 122, 75)",
+        qrIconBackgroundColor: "rgb(154, 122, 75)",
+        qrIconColor: "white",
       };
     default:
       return {

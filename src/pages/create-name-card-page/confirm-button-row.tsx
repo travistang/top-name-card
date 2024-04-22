@@ -8,10 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_NAME_CARD_LIST } from "../../routes/routes";
 
 type Props = {
+  editing?: boolean;
   submitting?: boolean;
   onSubmit: () => void;
 };
-export const ConfirmButtonRow = ({ submitting, onSubmit }: Props) => {
+export const ConfirmButtonRow = ({ editing, submitting, onSubmit }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -29,7 +30,7 @@ export const ConfirmButtonRow = ({ submitting, onSubmit }: Props) => {
         className="bg-green-500 h-16 flex-1 uppercase"
       >
         <FontAwesomeIcon icon={submitting ? faSpinner : faCheckCircle} />
-        create
+        {editing ? "update" : "create"}
       </button>
     </div>
   );

@@ -11,6 +11,5 @@ export const EditNameCardPage = () => {
   const { id } = useParams();
   const { data, isLoading } = useSWR(id, fetcher);
   if (isLoading || !data) return null;
-  console.log({ data });
   return <CreateNameCardPage defaultValue={data} />;
 };

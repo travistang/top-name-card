@@ -11,7 +11,7 @@ type Props = {
 export const Modal = ({ onClose, className, title, children }: Props) => {
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-stretch justify-end bg-gray-500/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex flex-col items-stretch justify-end bg-blue-700/50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div

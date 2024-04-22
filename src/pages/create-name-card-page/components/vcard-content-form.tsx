@@ -32,6 +32,14 @@ export const VCardContentForm = ({ vCard, onChange }: Props) => {
         label="URL"
         value={vCard.url}
         onChange={onChangeField("url")}
+        placeholder="https://..."
+      />
+      <TextInput
+        className="col-span-full"
+        label="email"
+        placeholder="some-name@some-email.com"
+        value={vCard.email}
+        onChange={onChangeField("email")}
       />
       <TextInput
         className="col-span-4"

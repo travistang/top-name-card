@@ -8,7 +8,7 @@ export const Header = () => {
   if (location.pathname.includes("display")) return null;
 
   return (
-    <div className="sticky top-0 z-20 h-16 flex-nowrap flex items-center px-2 bg-gray-300 dark:bg-gray-600 dark:text-gray-200 gap-2 flex-shrink-0">
+    <div className="sticky top-0 z-20 h-16 flex-nowrap flex items-center px-2  dark:text-gray-200 gap-2 flex-shrink-0">
       <Link to="/" className="flex items-center gap-2">
         <FontAwesomeIcon icon={faContactCard} />
         <h3>
@@ -23,9 +23,8 @@ export const Header = () => {
       {!location?.pathname.includes("create") && (
         <div className="flex-1 flex items-center justify-end">
           <Link to="/create">
-            <button className="h-12 bg-green-500 px-2">
+            <button className="h-12 px-2 aspect-square">
               <FontAwesomeIcon icon={faPlus} />
-              Create
             </button>
           </Link>
         </div>

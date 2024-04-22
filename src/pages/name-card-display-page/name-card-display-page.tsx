@@ -21,6 +21,7 @@ export const NameCardDisplayPage = ({ onClose, nameCard }: Props) => {
     qrPaddingColor,
     qrIcon,
     qrIconColor,
+    qrIconBackgroundColor,
   } = computeNameCardColor(nameCard);
   const { qrCode, text } = nameCard;
   if (displayType === "text") {
@@ -46,7 +47,7 @@ export const NameCardDisplayPage = ({ onClose, nameCard }: Props) => {
       style={{ background, backgroundColor }}
       className="p-4 fixed inset-0 z-50 flex flex-col items-center justify-center gap-16"
     >
-      <div className="flex items-center justify-center relative w-[80vw] aspect-square rounded-lg bg-transparent">
+      <div className="flex items-center justify-center relative w-full aspect-square rounded-lg bg-transparent">
         <QRCode
           fgColor={qrColor}
           bgColor={qrBackgroundColor}
@@ -55,11 +56,21 @@ export const NameCardDisplayPage = ({ onClose, nameCard }: Props) => {
           className="w-full h-full"
         />
         {qrIcon && (
-          <FontAwesomeIcon
-            icon={qrIcon}
-            style={{ color: qrIconColor }}
-            className="absolute w-10 h-10 p-4 rounded-lg aspect-square z-20 bg-white"
-          />
+          <div
+            style={{
+              background,
+              backgroundColor: qrIconBackgroundColor,
+            }}
+            className="absolute p-4 rounded-lg aspect-square z-20 flex items-center justify-center"
+          >
+            <FontAwesomeIcon
+              icon={qrIcon}
+              className="w-12 h-12 bg-transparent"
+              style={{
+                color: qrIconColor,
+              }}
+            />
+          </div>
         )}
       </div>
       {text && (

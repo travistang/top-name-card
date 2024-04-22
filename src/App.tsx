@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import { Header } from "./components/headers/header";
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
         <GlobalLoadingSpinner />
         <div className="flex flex-1 flex-col overflow-y-auto">
           <Outlet />
+          <Toaster containerClassName="toaster" />
         </div>
       </div>
     ),
