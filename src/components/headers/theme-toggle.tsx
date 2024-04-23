@@ -1,6 +1,8 @@
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
+import colors from "tailwindcss/colors";
 import { IconButton } from "../inputs/icon-button";
+import { StatusBarColor } from "../status-bar-color";
 
 type Theme = "light" | "dark";
 const THEME_STORAGE_KEY = "@top-name-card/localstorage/theme";
@@ -24,9 +26,12 @@ export const ThemeToggle = () => {
     document.documentElement.setAttribute("class", nextTheme);
   };
   return (
-    <IconButton
-      onClick={toggleTheme}
-      icon={theme === "light" ? faSun : faMoon}
-    />
+    <>
+      <StatusBarColor color={theme === 'light' ? colors.blue[300] : colors.blue[900]} />
+      <IconButton
+        onClick={toggleTheme}
+        icon={theme === "light" ? faSun : faMoon}
+      />
+    </>
   );
 };

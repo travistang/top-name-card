@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Helmet } from "react-helmet-async";
 import QRCode from "react-qr-code";
+import { StatusBarColor } from "../../components/status-bar-color";
 import { NameCard } from "../../domain/name-card";
 import {
   computeNameCardColor,
@@ -32,9 +32,7 @@ export const NameCardDisplayPage = ({ onClose, nameCard }: Props) => {
         style={{ backgroundColor }}
         className="p-4 fixed inset-0 z-50 flex flex-col items-center justify-center"
       >
-        <Helmet>
-          <meta name="theme-color" content={backgroundColor}></meta>
-        </Helmet>
+        <StatusBarColor color={backgroundColor} />
         <span
           style={{ color }}
           className="text-center antialiased [writing-mode:vertical-rl] text-7xl whitespace-pre-wrap font-bold text-black"
@@ -51,9 +49,7 @@ export const NameCardDisplayPage = ({ onClose, nameCard }: Props) => {
       style={{ background, backgroundColor }}
       className="p-4 fixed inset-0 z-50 flex flex-col items-center justify-center gap-16"
     >
-      <Helmet>
-          <meta name="theme-color" content={backgroundColor}></meta>
-      </Helmet>
+      <StatusBarColor color={backgroundColor} />
       <div className="flex items-center justify-center relative w-full aspect-square rounded-lg bg-transparent">
         <QRCode
           fgColor={qrColor}
