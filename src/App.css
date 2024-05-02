@@ -1,14 +1,14 @@
 body,
 div:not(div.toaster *, div.toaster) {
-  @apply bg-blue-300 dark:bg-blue-900 text-gray-900 dark:text-gray-300 transition-colors duration-300;
+  @apply bg-white-dark dark:bg-slate-dark text-slate dark:text-white transition-colors duration-300;
 }
 
 input {
-  @apply border-none outline-none px-2 rounded-lg bg-blue-200 dark:bg-blue-700/50 dark:border-gray-200 dark:border-2 dark:text-gray-200;
+  @apply border-none outline-none px-2 rounded-lg bg-slate-light dark:bg-slate dark:border-2 placeholder:text-slate-dark dark:placeholder:text-white-dark;
 }
 
 textarea {
-  @apply border-none outline-none px-2 rounded-lg bg-blue-500  dark:bg-blue-700/50 dark:text-gray-200 placeholder:text-gray-200/80 dark:placeholder:text-gray-500/50;
+  @apply border-none outline-none px-2 rounded-lg bg-slate-light dark:bg-slate dark:text-gray-200 placeholder:text-slate-dark dark:placeholder:text-white-dark;
 }
 
 button {
