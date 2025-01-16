@@ -1,6 +1,6 @@
-body,
-div:not(div.toaster *, div.toaster) {
+body {
   @apply bg-white-dark dark:bg-slate-dark text-slate dark:text-white transition-colors duration-300;
+  font-family: "Montserrat", serif;
 }
 
 input {

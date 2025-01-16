@@ -15,7 +15,7 @@ const router = createBrowserRouter(
         <div className="fixed inset-0 flex flex-col items-stretch overflow-hidden">
           <Header />
           <GlobalLoadingSpinner />
-          <div className="flex flex-1 flex-col overflow-y-auto">
+          <div className="flex flex-1 flex-col">
             <Outlet />
             <Toaster containerClassName="toaster" />
           </div>

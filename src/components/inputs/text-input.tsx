@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { HTMLInputTypeAttribute } from "react";
 import { FormSection } from "../form-section";
 
@@ -10,6 +11,7 @@ type Props = {
   value: string;
   placeholder?: string;
   className?: string;
+  inputClassName?: string;
 };
 export const TextInput = ({
   label,
@@ -20,6 +22,7 @@ export const TextInput = ({
   value,
   placeholder,
   className,
+  inputClassName,
 }: Props) => {
   return (
     <FormSection
@@ -33,14 +36,14 @@ export const TextInput = ({
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-12 px-2"
+          className={classNames("h-10 px-2", inputClassName)}
         />
       ) : (
         <textarea
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-36 p-2"
+          className={classNames("h-36 p-2", inputClassName)}
         />
       )}
     </FormSection>

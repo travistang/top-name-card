@@ -23,5 +23,18 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".no-scrollbar": {
+          /* Hide the scrollbar */
+          "-ms-overflow-style": "none", // Internet Explorer 10+
+          "scrollbar-width": "none", // Firefox
+          "&::-webkit-scrollbar": {
+            display: "none", // Chrome, Safari, Opera
+          },
+        },
+      });
+    },
+  ],
 };

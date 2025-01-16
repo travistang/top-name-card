@@ -1,7 +1,4 @@
-import { faContactCard, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
-import { ThemeToggle } from "./theme-toggle";
 
 export const Header = () => {
   const location = useLocation();
@@ -9,26 +6,11 @@ export const Header = () => {
 
   return (
     <div className="sticky top-0 z-20 h-16 flex-nowrap flex items-center px-2  dark:text-gray-200 gap-2 flex-shrink-0">
-      <Link to="/" className="flex items-center gap-2">
-        <FontAwesomeIcon icon={faContactCard} />
-        <h3>
-          <b>Name Card</b>
-        </h3>
-        <h6 className="font-mono hidden md:block">
-          | travis.
-          <b className="text-purple-500 dark:text-purple-300">engineering</b>
-        </h6>
-      </Link>
-      <ThemeToggle />
-      {!location?.pathname.includes("create") && (
-        <div className="flex-1 flex items-center justify-end">
-          <Link to="/create">
-            <button className="h-12 px-2 aspect-square">
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-          </Link>
-        </div>
-      )}
+      <div className="flex flex-col">
+        <h6 className="text-xs leading-3">TOP</h6>
+        <h3>Name Cards</h3>
+      </div>
+      <Link to="/" className="flex items-center gap-2"></Link>
     </div>
   );
 };

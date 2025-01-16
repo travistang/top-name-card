@@ -1,40 +1,49 @@
-import { FormSection } from "../../../components/form-section";
+import classNames from "classnames";
+import { useScroll } from "framer-motion";
+import { useRef, useState } from "react";
+import { PaginationDots } from "../../../components/pagination-dots";
 import { NameCard as NameCardType, WithId } from "../../../domain/name-card";
-import { NameCardPreviewItem } from "./name-card-preview-item";
+import { NameCardWrapper } from "./name-card/name-card-wrapper";
 
 type Props = {
-  listTitle: string;
-  itemsPerRow?: number;
   nameCards: WithId<NameCardType>[];
-  onSelectCard: (card: WithId<NameCardType>) => void;
-  onEditCard: (card: WithId<NameCardType>) => void;
-  onDeleteCard: (card: WithId<NameCardType>) => void;
 };
-export const NameCardList = ({
-  listTitle,
-  itemsPerRow = 1,
-  onEditCard,
-  onDeleteCard,
-  nameCards,
-  onSelectCard,
-}: Props) => {
-  if (!nameCards.length) return null;
+
+export const NameCardList = ({ nameCards }: Props) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const { scrollXProgress } = useScroll({
+    container: containerRef,
+  });
+
+  const onToggleEdit = (id: string) => () => {
+    setEditingCardId(editingCardId === id ? null : id);
+  };
   return (
-    <FormSection label={listTitle}>
+    <>
       <div
-        className="grid gap-2"
-        style={{ gridTemplateColumns: `repeat(${itemsPerRow},1fr)` }}
+        ref={containerRef}
+        className={classNames(
+          "relative flex flex-row flex-nowrap  snap-x snap-mandatory scroll-smooth flex-1 items-stretch no-scrollbar px-[35vw] touch-pan-x",
+          editingCardId ? "overflow-x-hidden" : "overflow-x-auto"
+        )}
       >
-        {nameCards.map((card) => (
-          <NameCardPreviewItem
-            nameCard={card}
+        {nameCards.map((card, index) => (
+          <NameCardWrapper
             key={card.id}
-            onClick={() => onSelectCard(card)}
-            onEdit={() => onEditCard(card)}
-            onDelete={() => onDeleteCard(card)}
+            index={index}
+            card={card}
+            editing={editingCardId === card.id}
+            onToggleEdit={onToggleEdit(card.id)}
+            container={containerRef}
           />
         ))}
       </div>
-    </FormSection>
+      <PaginationDots
+        progress={scrollXProgress}
+        numPages={nameCards.length}
+        className="w-[33vw] self-center mb-8"
+      />
+    </>
   );
 };

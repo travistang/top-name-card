@@ -1,35 +1,64 @@
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
-import useSWRMutation from "swr/mutation";
-import nameCard, {
-  CONTACT_NAME_CARD_CATEGORIES,
-  NameCard,
-  WithId,
-} from "../../domain/name-card";
-import { NameCardDisplayPage } from "../name-card-display-page/name-card-display-page";
-import { ConfirmDeleteModal } from "./components/confirm-delete-modal";
+import nameCard, { NameCard, WithId } from "../../domain/name-card";
 import { NameCardList } from "./components/name-card-list";
-import { InstanceTextSection } from "./instant-text-section/instant-text-section";
 
-const groupCardsByCategories = (
-  nameCards: WithId<NameCard>[]
-): Record<string, WithId<NameCard>[]> => {
-  const groups: Record<string, WithId<NameCard>[]> = {};
-  nameCards.forEach((card) => {
-    if (CONTACT_NAME_CARD_CATEGORIES.includes(card.category)) {
-      groups.contacts = [...(groups.contacts || []), card];
-    } else {
-      groups[card.category] = [...(groups[card.category] || []), card];
-    }
-  });
-  return groups;
-};
-
-const fetcher = () => {
-  return nameCard.allNameCards().then(groupCardsByCategories);
+const fetcher = (): WithId<NameCard>[] => {
+  return [
+    {
+      id: "1",
+      category: "instagram",
+      title: "John's Instagram",
+      qrCode: "https://example.com/qr/john-instagram",
+      text: "Follow me on Instagram!",
+      backgroundColor: "#E1306C",
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "2",
+      category: "whatsapp",
+      title: "John's WhatsApp",
+      qrCode: "https://example.com/qr/john-whatsapp",
+      text: "Chat with me on WhatsApp!",
+      backgroundColor: "#25D366",
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "3",
+      category: "facebook",
+      title: "John's Facebook",
+      qrCode: "https://example.com/qr/john-facebook",
+      text: "Connect with me on Facebook!",
+      backgroundColor: "#3b5998",
+      textColor: "#FFFFFF",
+    },
+    // {
+    //   id: "4",
+    //   category: "phone-number",
+    //   title: "John's Phone",
+    //   qrCode: "tel:+1234567890",
+    //   text: "Call me directly!",
+    //   backgroundColor: "#FFD700",
+    //   textColor: "#000000",
+    // },
+    {
+      id: "5",
+      category: "business",
+      title: "John's Business",
+      qrCode: "https://example.com/qr/john-business",
+      text: "Visit my business website!",
+      backgroundColor: "#000000",
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "6",
+      category: "other",
+      title: "Custom Link",
+      qrCode: "https://example.com/qr/custom",
+      text: "Check out this link!",
+      backgroundColor: "#8A2BE2",
+      textColor: "#FFFFFF",
+    },
+  ];
 };
 
 const deleter = async (_: string, { arg }: { arg: WithId<NameCard> }) => {
@@ -37,62 +66,7 @@ const deleter = async (_: string, { arg }: { arg: WithId<NameCard> }) => {
 };
 
 export const NameCardListPage = () => {
-  const {
-    data: nameCardsByCategories,
-    isLoading,
-    mutate: refetch,
-  } = useSWR("name-card", fetcher);
-  const { trigger: deleteCard, isMutating: isDeleting } = useSWRMutation(
-    "delete-name-card",
-    deleter,
-    { onSuccess: () => refetch() }
-  );
-  const navigate = useNavigate();
-  const [pendingDeleteCard, setPendingDeleteCard] =
-    useState<WithId<NameCard> | null>(null);
-  const [selectedCard, setSelectedCard] = useState<NameCard | null>(null);
-  const onSelectCard = (card: WithId<NameCard>) => setSelectedCard(card);
-  const onCloseCard = () => setSelectedCard(null);
-  const editCard = (card: WithId<NameCard>) => navigate(`/edit/${card.id}`);
-  const onConfirmDeleteCard = () => {
-    if (!pendingDeleteCard) return;
-    deleteCard(pendingDeleteCard)
-      .then(() => setPendingDeleteCard(null))
-      .then(() => refetch());
-  };
-  const showLoadingSpinner = isLoading || isDeleting;
-  return (
-    <div className="p-4 overflow-y-auto">
-      {showLoadingSpinner && (
-        <div className="self-center w-48 h-48 rounded-lg flex items-center justify-center">
-          <FontAwesomeIcon icon={faSpinner} className="w-8 h-8" />
-        </div>
-      )}
-      <InstanceTextSection onDisplay={onSelectCard} />
-      <div className="flex flex-col gap-4 items-stretch overflow-x-hidden">
-        {Object.entries(nameCardsByCategories ?? {})
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([groupName, cards]) => (
-            <NameCardList
-              itemsPerRow={groupName === "contacts" ? 2 : 1}
-              listTitle={groupName}
-              onEditCard={editCard}
-              onDeleteCard={(card) => setPendingDeleteCard(card)}
-              nameCards={cards}
-              onSelectCard={onSelectCard}
-              key={groupName}
-            />
-          ))}
-      </div>
-      {pendingDeleteCard && (
-        <ConfirmDeleteModal
-          onClose={() => setPendingDeleteCard(null)}
-          onConfirm={onConfirmDeleteCard}
-        />
-      )}
-      {selectedCard && (
-        <NameCardDisplayPage nameCard={selectedCard} onClose={onCloseCard} />
-      )}
-    </div>
-  );
+  const { data: cards } = useSWR("name-card", fetcher);
+
+  return <NameCardList nameCards={cards ?? []} />;
 };
