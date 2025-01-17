@@ -4,8 +4,6 @@ import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import { Header } from "./components/headers/header";
 import { GlobalLoadingSpinner } from "./global-loading-spinner";
-import { CreateNameCardPage } from "./pages/create-name-card-page/create-name-card-page";
-import { EditNameCardPage } from "./pages/edit-name-card-page/edit-name-card-page";
 import { NameCardListPage } from "./pages/name-card-list-page/name-card-list-page";
 
 const router = createBrowserRouter(
@@ -25,14 +23,6 @@ const router = createBrowserRouter(
         {
           path: "/",
           element: <NameCardListPage />,
-        },
-        {
-          path: "/create",
-          element: <CreateNameCardPage />,
-        },
-        {
-          path: "/edit/:id",
-          element: <EditNameCardPage />,
         },
       ],
     },

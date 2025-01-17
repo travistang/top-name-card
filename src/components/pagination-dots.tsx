@@ -51,7 +51,7 @@ const Dot = ({ index, interpolatedPage }: DotProps) => {
 };
 export const PaginationDots = ({ numPages, progress, className }: Props) => {
   const interpolatedPage = useTransform(progress, (progress) => {
-    return progress * numPages;
+    return progress * (numPages - 1);
   });
 
   if (!numPages) return null;

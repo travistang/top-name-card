@@ -1,55 +1,5 @@
-import {
-  faFacebook,
-  faInstagram,
-  faWhatsapp,
-} from "@fortawesome/free-brands-svg-icons";
-import {
-  IconDefinition,
-  faEllipsis,
-  faPhone,
-  faSuitcase,
-} from "@fortawesome/free-solid-svg-icons";
-
-export type NameCardCategory =
-  | "instagram"
-  | "whatsapp"
-  | "business"
-  | "facebook"
-  | "phone-number"
-  | "other";
-export const CONTACT_NAME_CARD_CATEGORIES: NameCardCategory[] = [
-  "instagram",
-  "whatsapp",
-  "facebook",
-  "phone-number",
-];
-
-export type NameCard = {
-  category: NameCardCategory;
-  title: string;
-  qrCode: string;
-  text: string;
-  backgroundColor?: string;
-  textColor?: string;
-};
-
-export const NameCardCategoryIcon: Record<NameCardCategory, IconDefinition> = {
-  instagram: faInstagram,
-  whatsapp: faWhatsapp,
-  business: faSuitcase,
-  facebook: faFacebook,
-  "phone-number": faPhone,
-  other: faEllipsis,
-};
-
-export type WithId<T> = T & { id: string };
-
-export interface NameCardProvider {
-  allNameCards(): Promise<WithId<NameCard>[]>;
-  create(data: NameCard): Promise<WithId<NameCard>>;
-  edit(id: string, data: Partial<NameCard>): Promise<null | WithId<NameCard>>;
-  remove(id: string): Promise<boolean>;
-}
+import { NameCard, WithId } from "..";
+import { NameCardProvider } from "./types";
 
 class LocalStorageNameCardProvider implements NameCardProvider {
   readonly storageKey = "@top-name-card/localstorage";
@@ -99,4 +49,6 @@ class LocalStorageNameCardProvider implements NameCardProvider {
   }
 }
 
-export default new LocalStorageNameCardProvider();
+const provider = new LocalStorageNameCardProvider();
+
+export default provider;

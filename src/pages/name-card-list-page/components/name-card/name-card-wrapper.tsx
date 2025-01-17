@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { RefObject } from "react";
 import { NameCard as NameCardType, WithId } from "../../../../domain/name-card";
 import { NameCardEditForm } from "../name-card-edit-form/name-card-edit-form";
@@ -12,6 +12,20 @@ type Props = {
   card: WithId<NameCardType>;
   editing: boolean;
   onToggleEdit: () => void;
+  onDelete: () => void;
+  onConfirmUpdate: () => void;
+  onChange: (card: WithId<NameCardType>) => void;
+};
+
+const cardVariants = {
+  editing: {
+    scale: 0.7,
+    y: -100,
+  },
+  idle: {
+    scale: 1,
+    y: 0,
+  },
 };
 
 export const NameCardWrapper = ({
@@ -20,28 +34,35 @@ export const NameCardWrapper = ({
   container,
   editing,
   onToggleEdit,
+  onConfirmUpdate,
+  onChange,
+  onDelete,
 }: Props) => {
   const { dragProps, dragY, deleteButtonScale } = useDragUp(editing);
+
+  const variantName = editing ? "editing" : "idle";
   return (
     <motion.div
       layout
+      key={card.id}
       className={classNames(
-        "flex flex-col flex-shrink-0 justify-center items-stretch snap-center",
-        editing ? "bg-slate-dark w-screen" : ""
+        "flex flex-col flex-shrink-0 flex-grow-0 justify-center items-center snap-center w-screen overflow-x-hidden no-scrollbar relative"
       )}
-      animate={{
-        width: editing ? "100vw" : "80vw",
-        z: editing ? 20 : 0,
-      }}
     >
       <motion.div
         layout
-        animate={{ scale: editing ? 0.75 : 1 }}
+        animate={variantName}
+        variants={cardVariants}
         transition={{
-          delay: 0.2,
           duration: 0.1,
+          delayChildren: 0.5,
+          staggerChildren: 0.5,
+          ease: "easeInOut",
+          damping: 12,
+          stiffness: 300,
+          type: "spring",
         }}
-        className="w-full h-[60vh] origin-top"
+        className="flex-1 flex-shrink-0 flex items-center justify-center origin-center"
       >
         <NameCard
           dragY={dragY}
@@ -49,16 +70,31 @@ export const NameCardWrapper = ({
           dragProps={dragProps}
           card={card}
           container={container}
-          editing={editing}
           onRequestEdit={onToggleEdit}
         />
       </motion.div>
-      <NameCardEditForm
-        card={card}
-        editing={editing}
-        onToggleEdit={onToggleEdit}
-      />
-      <DeleteButton onClick={() => {}} scale={deleteButtonScale} />
+      <DeleteButton onClick={onDelete} scale={deleteButtonScale} />
+      <AnimatePresence>
+        {editing && (
+          <motion.div
+            initial={{ opacity: 0, translateY: 1000 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: 1000 }}
+            transition={{
+              duration: 0.3,
+              type: "spring",
+            }}
+            className="flex-1 flex-shrink-0 gap-2 bg-slate-dark w-full px-4 justify-end flex flex-col items-stretch absolute bottom-0 left-0"
+          >
+            <NameCardEditForm
+              card={card}
+              onToggleEdit={onToggleEdit}
+              onConfirmUpdate={onConfirmUpdate}
+              onChange={(newCard) => onChange({ ...newCard, id: card.id })}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

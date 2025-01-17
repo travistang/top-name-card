@@ -14,11 +14,11 @@ export const DeleteButton = ({ onClick, scale }: Props) => {
         scale,
         opacity: scale,
       }}
-      className="flex justify-center self-center h-10 w-10 mt-4"
+      className="flex justify-center self-center mt-4 mb-8 h-10 w-10"
     >
       <IconButton
         onClick={onClick}
-        className="rounded-full p-4 aspect-square h-full w-full text-white bg-red-500/30"
+        className=" rounded-full p-4 aspect-square text-white bg-red-500/30 h-full w-full"
         icon={faTrash}
       />
     </motion.div>

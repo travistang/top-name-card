@@ -1,70 +1,99 @@
 import { faCheckCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { TextInput } from "../../../../components/inputs/text-input";
-import { NameCard } from "../../../../domain/name-card";
-import { FormSection } from "./form-section";
+import { useScroll } from "framer-motion";
+import { useRef } from "react";
+import { PaginationDots } from "../../../../components/pagination-dots";
+import {
+  NameCard,
+  NameCardCategory,
+  NameCardInputSettings,
+} from "../../../../domain/name-card";
+import { NameCardCategoryPicker } from "./name-card-category-picker";
+import { PhoneNumberFormSection } from "./phone-number-form-section";
+import { TextInputFormSection } from "./text-input-form-section";
+import { VCardFormSection } from "./vcard-form-section";
 
 type Props = {
   card: NameCard;
-  editing: boolean;
+  onChange: (cardInfo: NameCard) => void;
+  onConfirmUpdate: () => void;
   onToggleEdit: () => void;
 };
-export const NameCardEditForm = ({ card, editing, onToggleEdit }: Props) => {
-  const [formValue, setFormValue] = useState(card);
 
-  useEffect(() => {
-    setFormValue(card);
-  }, [card]);
+const PHONE_NUMBER_CATEGORIES: NameCardCategory[] = [
+  "phone-number",
+  "whatsapp",
+];
 
+export const NameCardEditForm = ({
+  card,
+  onToggleEdit,
+  onConfirmUpdate,
+  onChange,
+}: Props) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollXProgress } = useScroll({ container: containerRef });
+  const { qrCodeInputPrefix, qrCodeInputTitle = "QR Code" } =
+    NameCardInputSettings[card.category] ?? {};
   return (
-    <AnimatePresence>
-      {editing && (
-        <motion.div
-          initial={{ opacity: 0, translateY: 1000 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          exit={{ opacity: 0, y: 1000, translateY: 1000 }}
-          transition={{
-            delay: 0.2,
-            duration: 0.3,
-          }}
-          className="flex-1 flex-shrink-0 min-h-[60vh] gap-2 bg-slate-dark sticky bottom-0 px-4"
+    <>
+      <div
+        ref={containerRef}
+        className="flex flex-row flex-nowrap snap-x snap-mandatory overflow-x-auto gap-4 w-full no-scrollbar pb-2"
+      >
+        <NameCardCategoryPicker
+          category={card.category}
+          onChange={(category) => onChange({ ...card, category })}
+        />
+        {!PHONE_NUMBER_CATEGORIES.includes(card.category) && (
+          <TextInputFormSection
+            title={qrCodeInputTitle}
+            prefix={qrCodeInputPrefix}
+            onChange={(qrCode) => onChange({ ...card, qrCode })}
+            value={card.qrCode}
+          />
+        )}
+        {card.category === "whatsapp" && (
+          <PhoneNumberFormSection
+            onChange={(qrCode) => onChange({ ...card, qrCode })}
+            value={card.qrCode}
+          />
+        )}
+        {card.category === "phone-number" && (
+          <VCardFormSection
+            onChange={(qrCode) => onChange({ ...card, qrCode })}
+            value={card.qrCode}
+          />
+        )}
+        <TextInputFormSection
+          title="Card title"
+          placeholder="Title of the card?"
+          onChange={(title) => onChange({ ...card, title })}
+          value={card.title}
+        />
+        <TextInputFormSection
+          title="Card description"
+          placeholder="Keep it short!"
+          onChange={(text) => onChange({ ...card, text })}
+          value={card.text}
+        />
+      </div>
+      <PaginationDots progress={scrollXProgress} numPages={4} />
+      <div className="flex items-center justify-between py-4">
+        <button type="button" className="text-sm" onClick={onToggleEdit}>
+          <FontAwesomeIcon icon={faTimes} />
+          Cancel
+        </button>
+        <button
+          type="submit"
+          onClick={onConfirmUpdate}
+          className="text-sm text-green-500"
         >
-          <div className="flex flex-row flex-nowrap snap-x snap-mandatory overflow-x-auto gap-4 no-scrollbar pb-2">
-            <FormSection title="Card title">
-              <TextInput
-                onChange={(title) =>
-                  setFormValue((form) => ({ ...form, title }))
-                }
-                className="col-span-3"
-                inputClassName="text-sm bg-slate-dark"
-                value={formValue.title}
-              />
-            </FormSection>
-            <FormSection title="QR Code">
-              <TextInput
-                onChange={(qrCode) =>
-                  setFormValue((form) => ({ ...form, qrCode }))
-                }
-                className="col-span-3"
-                inputClassName="text-sm bg-slate-dark"
-                value={formValue.qrCode}
-              />
-            </FormSection>
-          </div>
-          <div className="flex items-center justify-between py-4">
-            <button type="button" className="text-sm" onClick={onToggleEdit}>
-              <FontAwesomeIcon icon={faTimes} />
-              Cancel
-            </button>
-            <button type="button" className="text-sm">
-              <FontAwesomeIcon icon={faCheckCircle} />
-              Update
-            </button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          <FontAwesomeIcon icon={faCheckCircle} />
+          Update
+        </button>
+      </div>
+    </>
   );
 };

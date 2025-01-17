@@ -1,17 +1,14 @@
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import {
-  AnimatePresence,
-  HTMLMotionProps,
-  motion,
-  MotionValue,
-} from "framer-motion";
+import { HTMLMotionProps, motion, MotionValue } from "framer-motion";
 import { RefObject, useRef } from "react";
 import QRCode from "react-qr-code";
 import { IconButton } from "../../../../components/inputs/icon-button";
 import {
+  NameCardCategoryColors,
   NameCardCategoryIcon,
+  NameCardInputSettings,
   NameCard as NameCardType,
   WithId,
 } from "../../../../domain/name-card";
@@ -22,7 +19,6 @@ type NameCardProps = {
   card: WithId<NameCardType>;
   index: number;
   dragY?: MotionValue<number>;
-  editing?: boolean;
   dragProps?: Partial<HTMLMotionProps<"div">>;
   onRequestEdit: () => void;
 };
@@ -30,13 +26,14 @@ export const NameCard = ({
   card,
   index,
   dragY,
-  editing,
   onRequestEdit,
   dragProps,
   container,
 }: NameCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-
+  const { background, text: color } = NameCardCategoryColors[card.category];
+  const { computeQRCodeValue = (value: string) => value } =
+    NameCardInputSettings[card.category] ?? {};
   const { scale, opacity } = useAnimation(container, cardRef);
   return (
     <motion.div
@@ -54,49 +51,44 @@ export const NameCard = ({
         ease: "easeOut",
       }}
       className={classNames(
-        "rounded-xl flex items-stretch self-stretch flex-shrink-0 w-full flex-col p-8"
+        "rounded-xl flex items-stretch flex-shrink-0 flex-col p-8 max-w-[70vw] aspect-[9_/_16] self-center overflow-hidden"
       )}
       style={{
         scale,
         opacity,
         y: dragY,
-        background: card.backgroundColor ?? "#bbbbbb",
+        background,
+        color,
       }}
     >
-      <AnimatePresence>
-        {!editing && (
-          <motion.div initial={false}>
-            <IconButton
-              key="edit-button"
-              className="h-8 w-8 -mt-4 -ml-2 mb-2"
-              onClick={onRequestEdit}
-              icon={faEllipsis}
-              style={{ color: card.textColor }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <IconButton
+        key="edit-button"
+        className="h-8 w-8 -mt-4 -ml-2 mb-2 z-10"
+        onClick={onRequestEdit}
+        icon={faEllipsis}
+        style={{ color }}
+      />
       <div
         className={classNames(
-          "aspect-square flex-shrink-0 rounded-lg flex items-center justify-center mr-4 w-full"
+          "aspect-square flex-shrink rounded-lg flex items-center justify-center w-auto max-w-full"
         )}
       >
         <QRCode
-          value={card.qrCode}
-          bgColor={card.backgroundColor}
-          fgColor={card.textColor}
+          value={computeQRCodeValue(card.qrCode)}
+          bgColor="transparent"
+          fgColor={color}
         />
       </div>
-      <div className="flex flex-col pt-8">
-        <div style={{ color: card.textColor }} className="flex-1">
-          <b style={{ color: card.textColor }}>{card.title}</b>
-          <h4>{card.text}</h4>
+      <div className="flex flex-col flex-1 pt-4 flex-shrink-0">
+        <div style={{ color }} className="flex-1">
+          <b className="text-ellipsis line-clamp-1">{card.title}</b>
+          <h4 className="text-ellipsis line-clamp-2 text-xs">{card.text}</h4>
         </div>
         <div className="self-end">
           <FontAwesomeIcon
             className="h-8 w-8"
             icon={NameCardCategoryIcon[card.category]}
-            style={{ color: card.textColor }}
+            style={{ color }}
           />
         </div>
       </div>

@@ -3,3 +3,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --slate-default: #393d3f;
+  --slate-dark: #2b2f31;
+  --white: #fdfdff;
+
+  --react-international-phone-background-color: var(--slate-dark);
+  --react-international-phone-text-color: var(--white);
+  --react-international-phone-border-color: transparent;
+  --react-international-phone-selected-dropdown-item-background-color: var(
+    --slate-default
+  );
+  --react-international-phone-height: 2.5rem;
+  --react-international-phone-font-size: 0.8rem;
+  --react-international-phone-border-radius: 0.5rem;
+}
