@@ -1,5 +1,6 @@
 import { faCheckCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { useScroll } from "framer-motion";
 import { useRef } from "react";
 import { PaginationDots } from "../../../../components/pagination-dots";
@@ -8,6 +9,7 @@ import {
   NameCardCategory,
   NameCardInputSettings,
 } from "../../../../domain/name-card";
+import { isNameCardValid } from "../../../../domain/name-card/validator";
 import { NameCardCategoryPicker } from "./name-card-category-picker";
 import { PhoneNumberFormSection } from "./phone-number-form-section";
 import { TextInputFormSection } from "./text-input-form-section";
@@ -18,6 +20,7 @@ type Props = {
   onChange: (cardInfo: NameCard) => void;
   onConfirmUpdate: () => void;
   onToggleEdit: () => void;
+  confirmFormText?: string;
 };
 
 const PHONE_NUMBER_CATEGORIES: NameCardCategory[] = [
@@ -28,6 +31,7 @@ const PHONE_NUMBER_CATEGORIES: NameCardCategory[] = [
 export const NameCardEditForm = ({
   card,
   onToggleEdit,
+  confirmFormText = "Update",
   onConfirmUpdate,
   onChange,
 }: Props) => {
@@ -36,6 +40,12 @@ export const NameCardEditForm = ({
   const { scrollXProgress } = useScroll({ container: containerRef });
   const { qrCodeInputPrefix, qrCodeInputTitle = "QR Code" } =
     NameCardInputSettings[card.category] ?? {};
+
+  const onCategoryChange = (category: NameCardCategory) => {
+    onChange({ ...card, category, qrCode: "" });
+  };
+
+  const shouldDisableSubmitButton = !isNameCardValid(card);
   return (
     <>
       <div
@@ -44,7 +54,7 @@ export const NameCardEditForm = ({
       >
         <NameCardCategoryPicker
           category={card.category}
-          onChange={(category) => onChange({ ...card, category })}
+          onChange={onCategoryChange}
         />
         {!PHONE_NUMBER_CATEGORIES.includes(card.category) && (
           <TextInputFormSection
@@ -87,11 +97,15 @@ export const NameCardEditForm = ({
         </button>
         <button
           type="submit"
+          disabled={shouldDisableSubmitButton}
           onClick={onConfirmUpdate}
-          className="text-sm text-green-500"
+          className={classNames(
+            "text-sm text-green-500",
+            shouldDisableSubmitButton && "cursor-not-allowed opacity-70"
+          )}
         >
           <FontAwesomeIcon icon={faCheckCircle} />
-          Update
+          {confirmFormText}
         </button>
       </div>
     </>

@@ -51,7 +51,7 @@ export const NameCard = ({
         ease: "easeOut",
       }}
       className={classNames(
-        "rounded-xl flex items-stretch flex-shrink-0 flex-col p-8 max-w-[70vw] aspect-[9_/_16] self-center overflow-hidden"
+        "rounded-xl flex items-stretch flex-shrink-0 flex-col p-8 max-w-[70vw] aspect-[9_/_16] self-center overflow-hidden shadow-xl"
       )}
       style={{
         scale,

@@ -39,13 +39,13 @@ class LocalStorageNameCardProvider implements NameCardProvider {
     return newCardInfo;
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: string): Promise<string | null> {
     const cards = await this.allNameCards();
     const editingCardIndex = cards.findIndex((card) => card.id === id);
-    if (editingCardIndex === -1) return false;
+    if (editingCardIndex === -1) return null;
     cards.splice(editingCardIndex, 1);
     localStorage.setItem(this.storageKey, JSON.stringify(cards));
-    return true;
+    return id;
   }
 }
 

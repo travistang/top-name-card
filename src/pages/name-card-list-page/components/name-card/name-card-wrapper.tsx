@@ -11,9 +11,11 @@ type Props = {
   index: number;
   card: WithId<NameCardType>;
   editing: boolean;
+  className?: string;
   onToggleEdit: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
   onConfirmUpdate: () => void;
+  confirmFormText?: string;
   onChange: (card: WithId<NameCardType>) => void;
 };
 
@@ -31,11 +33,13 @@ const cardVariants = {
 export const NameCardWrapper = ({
   card,
   index,
+  className,
   container,
   editing,
   onToggleEdit,
   onConfirmUpdate,
   onChange,
+  confirmFormText,
   onDelete,
 }: Props) => {
   const { dragProps, dragY, deleteButtonScale } = useDragUp(editing);
@@ -44,9 +48,10 @@ export const NameCardWrapper = ({
   return (
     <motion.div
       layout
-      key={card.id}
+      key={card.id ?? "adding"}
       className={classNames(
-        "flex flex-col flex-shrink-0 flex-grow-0 justify-center items-center snap-center w-screen overflow-x-hidden no-scrollbar relative"
+        "flex flex-col flex-shrink-0 flex-grow-0 justify-center items-center snap-center w-screen overflow-x-hidden no-scrollbar relative",
+        className
       )}
     >
       <motion.div
@@ -73,7 +78,9 @@ export const NameCardWrapper = ({
           onRequestEdit={onToggleEdit}
         />
       </motion.div>
-      <DeleteButton onClick={onDelete} scale={deleteButtonScale} />
+      {onDelete && (
+        <DeleteButton onClick={onDelete} scale={deleteButtonScale} />
+      )}
       <AnimatePresence>
         {editing && (
           <motion.div
@@ -88,6 +95,7 @@ export const NameCardWrapper = ({
           >
             <NameCardEditForm
               card={card}
+              confirmFormText={confirmFormText}
               onToggleEdit={onToggleEdit}
               onConfirmUpdate={onConfirmUpdate}
               onChange={(newCard) => onChange({ ...newCard, id: card.id })}

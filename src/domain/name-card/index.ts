@@ -118,6 +118,13 @@ export const NameCardInputSettings: Partial<
 };
 export type WithId<T> = T & { id: string };
 
+export const DEFAULT_NAME_CARD: NameCard = {
+  category: "instagram",
+  title: "",
+  qrCode: "",
+  text: "",
+};
+
 import Provider from "./providers";
 
 export default Provider;

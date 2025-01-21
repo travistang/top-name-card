@@ -90,7 +90,7 @@ class MockProvider implements NameCardProvider {
   }
   async remove(id: string) {
     this.cards = this.cards.filter((card) => card.id !== id);
-    return true;
+    return id;
   }
 }
 
