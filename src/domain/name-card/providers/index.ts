@@ -1,2 +1,2 @@
-import MockNameCardProvider from "./mock-provider";
-export default MockNameCardProvider;
+import LocalStorageProvider from "./local-storage-provider";
+export default LocalStorageProvider;

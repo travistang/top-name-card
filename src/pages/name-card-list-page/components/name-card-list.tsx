@@ -52,6 +52,7 @@ export const NameCardList = ({
       const { id: _, ...cardInfo } = mutatingCard;
       await onAdd(cardInfo);
       stopEdit();
+      containerRef.current?.scrollBy({ left: 100 });
       return;
     }
     await onUpdate(mutatingCard.id!, mutatingCard);
@@ -63,7 +64,7 @@ export const NameCardList = ({
       <div
         ref={containerRef}
         className={classNames(
-          "relative flex flex-row flex-nowrap snap-x snap-mandatory scroll-smooth flex-1 items-stretch no-scrollbar touch-pan-x pr-24",
+          "relative flex flex-row flex-nowrap snap-x snap-mandatory scroll-smooth flex-1 items-stretch no-scrollbar touch-pan-x px-24",
           state !== "idle" ? "overflow-x-hidden" : "overflow-x-auto"
         )}
       >

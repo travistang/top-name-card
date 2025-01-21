@@ -25,7 +25,7 @@ const creater = async (_: string, { arg }: { arg: NameCard }) => {
  * Hooks that provide CRUD methods on top of the name card provider and update the SWR result locally rather than fetching all cards again
  */
 export const useCard = () => {
-  const { data: cards, mutate } = useSWR("name-card", fetcher);
+  const { data: cards, mutate, isLoading } = useSWR("name-card", fetcher);
 
   const { trigger: addCard } = useSWRMutation("name-card-add", creater, {
     onSuccess: (newCard) => mutate([...(cards ?? []), newCard]),
@@ -50,5 +50,6 @@ export const useCard = () => {
     addCard,
     deleteCard,
     updateCard,
+    isLoading,
   };
 };

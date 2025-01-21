@@ -78,7 +78,7 @@ export const NameCardWrapper = ({
           onRequestEdit={onToggleEdit}
         />
       </motion.div>
-      {onDelete && (
+      {onDelete && !editing && (
         <DeleteButton onClick={onDelete} scale={deleteButtonScale} />
       )}
       <AnimatePresence>
