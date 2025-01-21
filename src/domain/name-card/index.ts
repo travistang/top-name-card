@@ -112,6 +112,10 @@ export const NameCardInputSettings: Partial<
     qrCodeInputPrefix: "in/",
     computeQRCodeValue: (username) => `https://www.linkedin.com/in/${username}`,
   },
+  x: {
+    qrCodeInputTitle: "X username",
+    computeQRCodeValue: (username) => `https://x.com/${username}`,
+  },
   "phone-number": {
     qrCodeInputTitle: "Your contact info",
   },

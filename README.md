@@ -1,8 +1,8 @@
 # TOP Name Card
 
-> Your name card and big texts, all in one place.
+> Share your contact with style.
 
-<img src="screenshots/list-page.png" width="240px" height="480px" alt="Screenshot of the main page" />
+<img src="screenshots/main.png" width="240px" height="480px" alt="Screenshot of the main page" />
 
 The **TOP Name Card** (part of Travis' Over-engineered Projects) aims to solve 2 problems in a similar fashion:
 
@@ -21,18 +21,9 @@ There are different categories of `name cards` available and each differs by col
 - `Whatsapp` name cards show a QR code with an URL `https://api.whatsapp.com/send?phone=<the_phone_number_you_entered>`. A phone that scans this code should open a chat between that person and the phone number written on the name card on WhatsApp.
 - `Facebook` name cards show a QR code with an URL `https://www.facebook.com/<facebook_id_you_entered>`. Scanning it should open the desired facebook profile.
 - `Business` name cards show a QR code that contains a [vCard](https://en.m.wikipedia.org/wiki/VCard). When a smartphone (I mean iPhone or Android, although I only tested this feature on iPhone) scans that QR code, it prefills the contact with corresponding info (For now I only chose to support first name, last name, email, url and phone number) and one can click "Add to new contact" to quickly save the contact info you provided.
+- _(new!)_ `LinkedIn` name cards allow you to enter your username on Linkedin and shows `https://www.linkedin.com/in/${username}` on the QR Code.
+- _(new!)_ `X` name cards will show `https://x.com/<username>`
 - `Other` name cards allow you to enter arbitrary text and contents for the QR code.
-
-Once you created the name cards, they will be shown on the main page and clicking any of it would cause the app to show its content in full screen. If a QR code is included, the content will be shown in portrait mode, with the QR code at the top and text at the bottom:
-
-<img src="screenshots/qr-and-text.png" width="240px" height="480px" alt="example screenshots of showing both QR code and texts" />
-
-If the category is one of `instagram`, `whatsapp`, `facebook` and `business`, it will be shown with just a QR code containing the aforementioned content, each with their distinctive style:
-<img src="screenshots/facebook-qr.png" width="240px" height="480px" alt="example screenshots of showing a QR code inside facebook name card" />
-
-If only text is displayed, the content will be shown in landscape with a very large font:
-
-<img src="screenshots/big-text.png" width="240px" height="480px" alt="example screenshots of showing a big text" />
 
 ## But why?
 
@@ -45,8 +36,8 @@ I host the app with GitHub pages. You can use it on [https://travistang.github.i
 ## Roadmap
 
 - [ ] Arbitrary font colors and background colors.
-- [ ] Remove redundant name card types (phone number)
-- [ ] Display list of name cards in a fancier way (like how the cards are shown in Apple Wallet)
+- [x] Remove redundant name card types (phone number)
+- [x] Display list of name cards in a fancier way (like how the cards are shown in Apple Wallet)
 
 ## Development
 
