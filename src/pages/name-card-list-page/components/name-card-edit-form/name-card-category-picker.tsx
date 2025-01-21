@@ -37,7 +37,7 @@ export const NameCardCategoryPicker = ({
   onChange,
 }: Props) => {
   return (
-    <FormSection title="Choose a type">
+    <FormSection title="Card category">
       <div className="grid grid-cols-4 gap-4 place-items-center">
         {NAME_CARD_CATEGORIES.map((category) => (
           <div
