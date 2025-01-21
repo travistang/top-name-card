@@ -100,7 +100,7 @@ export const NameCardList = ({
       <motion.div
         animate={state !== "idle" ? "active" : "idle"}
         variants={paginationDotVariants}
-        transition={{ duration: 0.2, type: "spring" }}
+        transition={{ duration: 0.2 }}
         className="flex items-center justify-center"
       >
         <PaginationDots
