@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 1024 1024" style="shape-rendering: geometricprecision; text-rendering: geometricprecision; fill-rule: evenodd; clip-rule: evenodd;">
+    <g style="fill-opacity: 1;">
+        <path d="M501.5 240.5q124.986-6.27 214.5 80 95.035 101.138 73 239Q759.486 700.507 627.5 758q-110.655 42.354-220-3-95.136-45.136-137.5-141.5a224 224 0 0 1-9.5-30q29.017-.5 58 1 48.342 114.572 171 136.5 96.142 11.47 172-48 91.874-82.1 72.5-204.5Q707.827 354.332 599.5 310q-126.318-42.034-227 44-39.072 37.623-57 89-27.995.75-56 .5 14.915-63.336 57.5-112 74.418-81.333 184.5-91" transform="matrix(1.87444 0 0 1.89822 -464.063 -452.603)" style="opacity: 1; fill-opacity: 1;"></path>
+    </g>
+    <path d="M363.5 388.5q116.5-.25 233 .5 54.41 6.929 77.5 56.5 19.873 58.264-26.5 98.5a136.5 136.5 0 0 1-17 10 1490 1490 0 0 0 42.5 49.5q.75 15.992.5 32-24.005.25-48-.5l-62-70a800 800 0 0 0-40-.5v-56q35.504.25 71-.5 32.154-7.085 27.5-39.5-7.72-20.513-29.5-24.5-114.5-.75-229-.5z" class="icon_svg__icon-changable-path" transform="matrix(1.87444 0 0 1.89822 -464.063 -452.603)" style=" opacity: 1; fill-opacity: 1;"></path>
+    <g style=" fill-opacity: 1;">
+        <path d="M249.5 485.5h234v150h-57v-95h-177z" transform="matrix(1.87444 0 0 1.89822 -464.063 -452.603)" style="opacity: 1;  fill-opacity: 1;"></path>
+    </g>
+</svg>

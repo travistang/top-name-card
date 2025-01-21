@@ -1,5 +1,4 @@
 import { parse } from "vcard4";
-import { NameCard } from "./name-card";
 
 export type VCard = {
   firstName: string;
@@ -27,10 +26,10 @@ export const getVCardText = (vcard: VCard): string => {
   return result + "END:VCARD";
 };
 
-export const retrieveVCardFromNameCard = (card: NameCard): VCard => {
+export const retrieveVCardFromText = (text: string): VCard => {
   try {
     const retrievedCard = { ...DEFAULT_VCARD };
-    const parsedVCard = parse(card.qrCode);
+    const parsedVCard = parse(text);
     if (Array.isArray(parsedVCard)) return retrievedCard;
     const getField = (fieldName: string) =>
       parsedVCard.getProperty(fieldName)?.[0]?.value;
