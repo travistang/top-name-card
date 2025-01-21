@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: "~/dist"
+          path: "./dist"
   deploy:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: build
@@ -44,13 +44,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
-          path: "~/dist"
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: "~/dist"
+          path: "./dist"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
