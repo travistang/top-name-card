@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 import nameCardProvider, { NameCard, WithId } from "../../domain/name-card";
@@ -28,20 +29,26 @@ export const useCard = () => {
   const { data: cards, mutate, isLoading } = useSWR("name-card", fetcher);
 
   const { trigger: addCard } = useSWRMutation("name-card-add", creater, {
-    onSuccess: (newCard) => mutate([...(cards ?? []), newCard]),
+    onSuccess: (newCard) => {
+      mutate([...(cards ?? []), newCard]);
+      toast.success("Name card created!");
+    },
   });
   const { trigger: updateCard } = useSWRMutation("name-card-update", updater, {
-    onSuccess: (newCard) =>
+    onSuccess: (newCard) => {
       mutate(
         newCard
           ? cards?.map((card) => (card.id === newCard.id ? newCard : card))
           : cards,
         true
-      ),
+      );
+      toast.success("Name card updated!");
+    },
   });
   const { trigger: deleteCard } = useSWRMutation("name-card-delete", deleter, {
     onSuccess: (deletedId) => {
       mutate(cards?.filter((card) => card.id !== deletedId));
+      toast.success("Name card deleted!");
     },
   });
 
