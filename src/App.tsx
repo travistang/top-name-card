@@ -13,7 +13,7 @@ const router = createBrowserRouter(
           <Header />
           <div className="flex flex-1 flex-col">
             <Outlet />
-            <Toaster containerClassName="toaster" />
+            <Toaster position="bottom-center" containerClassName="toaster" />
           </div>
         </div>
       ),

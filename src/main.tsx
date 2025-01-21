@@ -15,7 +15,7 @@ const updateSW = registerSW({
   onNeedRefresh() {
     const toastId = toast.custom(() => (
       <span
-        className="bg-white p-2 rounded-lg"
+        className="text-slate-dark p-2 rounded-lg"
         onClick={() => {
           toast.dismiss(toastId);
           updateSW(true);
