@@ -1,8 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { LargeScreenWarning } from "./large-screen-warning";
+import { useLargeScreen } from "./use-large-screen";
 
 export const Header = () => {
-  const location = useLocation();
-  if (location.pathname.includes("display")) return null;
+  const isLargeScreen = useLargeScreen();
 
   return (
     <div className="sticky top-0 z-20 h-16 flex-nowrap flex items-center px-2  dark:text-gray-200 gap-2 flex-shrink-0">
@@ -11,6 +12,7 @@ export const Header = () => {
         <h3>Name Cards</h3>
       </div>
       <Link to="/" className="flex items-center gap-2"></Link>
+      <LargeScreenWarning isLargeScreen={isLargeScreen} />
     </div>
   );
 };
