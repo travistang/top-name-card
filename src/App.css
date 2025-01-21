@@ -4,7 +4,8 @@ body {
 }
 
 input {
-  @apply border-none outline-none px-2 rounded-lg bg-slate-light dark:bg-slate dark:border-2 placeholder:text-slate-dark dark:placeholder:text-white-dark;
+  @apply border-none outline-none px-2 rounded-lg bg-slate-light dark:bg-slate dark:border-2 
+  text-lg placeholder:text-slate-dark dark:placeholder:text-white-dark;
 }
 
 textarea {
