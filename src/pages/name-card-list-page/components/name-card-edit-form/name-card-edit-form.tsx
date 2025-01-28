@@ -1,7 +1,6 @@
 import { faCheckCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { useScroll } from "framer-motion";
 import { useRef } from "react";
 import { PaginationDots } from "../../../../components/pagination-dots";
 import {
@@ -10,6 +9,7 @@ import {
   NameCardInputSettings,
 } from "../../../../domain/name-card";
 import { isNameCardValid } from "../../../../domain/name-card/validator";
+import { useScrollPage } from "../../../../hooks/use-scroll-page";
 import { NameCardCategoryPicker } from "./name-card-category-picker";
 import { PhoneNumberFormSection } from "./phone-number-form-section";
 import { TextInputFormSection } from "./text-input-form-section";
@@ -36,8 +36,7 @@ export const NameCardEditForm = ({
   onChange,
 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const { scrollXProgress } = useScroll({ container: containerRef });
+  const currentPage = useScrollPage(containerRef);
   const { qrCodeInputPrefix, qrCodeInputTitle = "QR Code" } =
     NameCardInputSettings[card.category] ?? {};
 
@@ -58,6 +57,7 @@ export const NameCardEditForm = ({
         />
         {!PHONE_NUMBER_CATEGORIES.includes(card.category) && (
           <TextInputFormSection
+            data-index={1}
             title={qrCodeInputTitle}
             prefix={qrCodeInputPrefix}
             onChange={(qrCode) => onChange({ ...card, qrCode })}
@@ -89,7 +89,7 @@ export const NameCardEditForm = ({
           value={card.text}
         />
       </div>
-      <PaginationDots progress={scrollXProgress} numPages={4} />
+      <PaginationDots page={currentPage} numPages={4} />
       <div className="flex items-center justify-between py-4">
         <button type="button" className="text-sm" onClick={onToggleEdit}>
           <FontAwesomeIcon icon={faTimes} />
