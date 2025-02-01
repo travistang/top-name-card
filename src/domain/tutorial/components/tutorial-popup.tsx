@@ -4,23 +4,25 @@ import { StepType } from "@reactour/tour";
 import { PaginationDots } from "../../../components/pagination-dots";
 import { TutorialStep } from "../steps";
 
+const stepsWithButtons: TutorialStep[] = [
+  TutorialStep.CongratsCreatingFirstCard,
+  TutorialStep.EditFormIntro,
+  TutorialStep.ShowSwipeToDeleteAnimation,
+  TutorialStep.ShowCreateCard,
+  TutorialStep.Congrats,
+];
+
 type Props = {
   setCurrentStep: (step: number) => void;
   steps: StepType[];
   currentStep: number;
 };
+
 export const TutorialPopup = ({
   setCurrentStep,
   steps,
   currentStep,
 }: Props) => {
-  const stepsWithButtons: TutorialStep[] = [
-    TutorialStep.CongratsCreatingFirstCard,
-    TutorialStep.EditFormIntro,
-    TutorialStep.ShowSwipeToDeleteAnimation,
-    TutorialStep.ShowCreateCard,
-    TutorialStep.Congrats,
-  ];
   const buttonText =
     currentStep === TutorialStep.Congrats ? "Complete" : "Next";
   return (
