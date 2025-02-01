@@ -55,6 +55,8 @@ jobs:
     if: ${{ github.ref == 'refs/heads/develop' }}
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: staging
     env:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
