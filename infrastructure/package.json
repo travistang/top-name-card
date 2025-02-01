@@ -1,0 +1,19 @@
+{
+  "name": "infrastructure",
+  "version": "1.0.0",
+  "description": "AWS CDK for deploying Name Card",
+  "main": "app.ts",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "cdk deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-cdk-lib": "^2.177.0",
+    "constructs": "^10.4.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

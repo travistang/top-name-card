@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 *storybook.log
+
+# Terraform provider and its lock file
+.terraform
+.terraform.*
