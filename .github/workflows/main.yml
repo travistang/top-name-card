@@ -85,7 +85,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Run CDK Synth
-        run: cdk synth
+        run: cd infrastructure && cdk synth
 
       - name: Deploy CDK Stack
-        run: cdk deploy --require-approval never
+        run: cd infrastructure && cdk deploy --require-approval never
