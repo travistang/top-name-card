@@ -1,8 +1,15 @@
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTour } from "@reactour/tour";
 import classNames from "classnames";
-import { HTMLMotionProps, motion, MotionValue } from "framer-motion";
-import { RefObject, useRef } from "react";
+import {
+  animate,
+  HTMLMotionProps,
+  motion,
+  MotionValue,
+  useDragControls,
+} from "framer-motion";
+import { RefObject, useEffect, useRef } from "react";
 import QRCode from "react-qr-code";
 import { IconButton } from "../../../../components/inputs/icon-button";
 import {
@@ -12,6 +19,7 @@ import {
   NameCard as NameCardType,
   WithId,
 } from "../../../../domain/name-card";
+import { TutorialStep } from "../../../../domain/tutorial/steps";
 import { useAnimation } from "./use-animation";
 
 type NameCardProps = {
@@ -31,6 +39,26 @@ export const NameCard = ({
   container,
 }: NameCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  /**
+   * TODO: Move this to its separate hook. Don't complicate the cards' logic!
+   */
+  const { currentStep, isOpen: isRunningTutorial } = useTour();
+  const dragControls = useDragControls();
+  useEffect(() => {
+    if (
+      !isRunningTutorial ||
+      currentStep !== TutorialStep.ShowSwipeToDeleteAnimation
+    )
+      return;
+    setTimeout(() => {
+      if (!dragY) return;
+      animate(dragY, [0, -100, -100, -100, 0], {
+        duration: 1.5,
+        ease: "easeOut",
+      });
+    }, 800);
+  }, [dragY, currentStep, isRunningTutorial]);
+
   const { background, text: color } = NameCardCategoryColors[card.category];
   const { computeQRCodeValue = (value: string) => value } =
     NameCardInputSettings[card.category] ?? {};
@@ -39,7 +67,9 @@ export const NameCard = ({
     <motion.div
       ref={cardRef}
       key={card.id}
+      data-testid="name-card"
       {...dragProps}
+      dragControls={dragControls}
       initial={{ opacity: 0, y: 1000 }}
       animate={{
         opacity: 1,
@@ -62,6 +92,7 @@ export const NameCard = ({
       }}
     >
       <IconButton
+        testId="name-card-edit"
         key="edit-button"
         className="h-8 w-8 -mt-4 -ml-2 mb-2 z-10"
         onClick={onRequestEdit}

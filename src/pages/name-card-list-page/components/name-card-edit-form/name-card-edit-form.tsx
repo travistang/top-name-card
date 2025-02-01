@@ -1,7 +1,13 @@
-import { faCheckCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faCheckCircle,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTour } from "@reactour/tour";
 import classNames from "classnames";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PaginationDots } from "../../../../components/pagination-dots";
 import {
   NameCard,
@@ -9,7 +15,9 @@ import {
   NameCardInputSettings,
 } from "../../../../domain/name-card";
 import { isNameCardValid } from "../../../../domain/name-card/validator";
-import { useScrollPage } from "../../../../hooks/use-scroll-page";
+import { TutorialStep } from "../../../../domain/tutorial/steps";
+
+import { IconButton } from "../../../../components/inputs/icon-button";
 import { NameCardCategoryPicker } from "./name-card-category-picker";
 import { PhoneNumberFormSection } from "./phone-number-form-section";
 import { TextInputFormSection } from "./text-input-form-section";
@@ -36,20 +44,67 @@ export const NameCardEditForm = ({
   onChange,
 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const currentPage = useScrollPage(containerRef);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    containerRef.current?.children[currentPage]?.scrollIntoView({
+      block: "end",
+      inline: "start",
+    });
+  }, [currentPage]);
+  const { currentStep, setCurrentStep, isOpen: isRunningTutorial } = useTour();
+
   const { qrCodeInputPrefix, qrCodeInputTitle = "QR Code" } =
     NameCardInputSettings[card.category] ?? {};
 
   const onCategoryChange = (category: NameCardCategory) => {
     onChange({ ...card, category, qrCode: "" });
+    if (
+      isRunningTutorial &&
+      currentStep === TutorialStep.SelectBusinessCategory
+    ) {
+      setCurrentStep(currentStep + 1);
+    }
   };
 
+  const handleSectionAppear = (nextStep: number) => () => {
+    if (!isRunningTutorial) return;
+    setCurrentStep(nextStep);
+  };
+
+  const toNextSession = (direction: "left" | "right") => () => {
+    const nextPage = direction === "left" ? currentPage - 1 : currentPage + 1;
+    const clampedNextPage = Math.max(0, Math.min(nextPage, 3));
+    setCurrentPage(clampedNextPage);
+    if (isRunningTutorial && currentStep === TutorialStep.ClickNextButton) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
   const shouldDisableSubmitButton = !isNameCardValid(card);
   return (
     <>
+      {/* Control items and pagination */}
+      <div className="flex justify-between px-4 z-10 pointer-events-auto">
+        <IconButton
+          disabled={currentPage === 0 || isRunningTutorial}
+          onClick={toNextSession("left")}
+          testId="edit-form-arrow-left"
+          icon={faArrowLeft}
+          className="w-12 z-10 h-8"
+        />
+        <PaginationDots page={currentPage} numPages={4} />
+        <IconButton
+          disabled={currentPage === 3}
+          onClick={toNextSession("right")}
+          testId="edit-form-arrow-right"
+          icon={faArrowRight}
+          className="w-12 z-10 h-8"
+        />
+      </div>
       <div
         ref={containerRef}
-        className="flex flex-row flex-nowrap snap-x snap-mandatory overflow-x-auto gap-4 w-full no-scrollbar pb-2"
+        data-testid="create-edit-form"
+        className="flex flex-row flex-nowrap snap-x snap-mandatory overflow-x-hidden gap-4 w-full no-scrollbar pb-2"
       >
         <NameCardCategoryPicker
           category={card.category}
@@ -57,7 +112,7 @@ export const NameCardEditForm = ({
         />
         {!PHONE_NUMBER_CATEGORIES.includes(card.category) && (
           <TextInputFormSection
-            data-index={1}
+            testId="qr-input"
             title={qrCodeInputTitle}
             prefix={qrCodeInputPrefix}
             onChange={(qrCode) => onChange({ ...card, qrCode })}
@@ -77,26 +132,34 @@ export const NameCardEditForm = ({
           />
         )}
         <TextInputFormSection
+          onAppear={handleSectionAppear(TutorialStep.EnterTitle)}
           title="Card title"
           placeholder="Title of the card?"
           onChange={(title) => onChange({ ...card, title })}
           value={card.title}
         />
         <TextInputFormSection
+          onAppear={handleSectionAppear(TutorialStep.EnterDetailsAndConfirm)}
           title="Card description"
           placeholder="Keep it short!"
           onChange={(text) => onChange({ ...card, text })}
           value={card.text}
         />
       </div>
-      <PaginationDots page={currentPage} numPages={4} />
+
       <div className="flex items-center justify-between py-4">
-        <button type="button" className="text-sm" onClick={onToggleEdit}>
+        <button
+          data-testid="name-card-edit-form-cancel"
+          type="button"
+          className="text-sm"
+          onClick={onToggleEdit}
+        >
           <FontAwesomeIcon icon={faTimes} />
           Cancel
         </button>
         <button
           type="submit"
+          data-testid="create-edit-submit-button"
           disabled={shouldDisableSubmitButton}
           onClick={onConfirmUpdate}
           className={classNames(

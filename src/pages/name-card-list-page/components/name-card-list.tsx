@@ -7,7 +7,10 @@ import {
   NameCard as NameCardType,
   WithId,
 } from "../../../domain/name-card";
+
 import { useScrollPage } from "../../../hooks/use-scroll-page";
+import { useShowCreateCardDemo } from "../hooks/use-show-create-card-demo";
+import { useTutorialNextStep } from "../hooks/use-tutorial-next-step";
 import { CreateNameCard } from "./create-name-card/create-name-card";
 import { NameCardWrapper } from "./name-card/name-card-wrapper";
 import { useCardMutation } from "./use-card-mutation";
@@ -40,18 +43,33 @@ export const NameCardList = ({
   const { state, stopEdit, toggleEdit, add, mutatingCard, mutate } =
     useCardMutation();
 
+  const withStepTutorial = useTutorialNextStep();
+  useShowCreateCardDemo(containerRef);
+
   const getCardInfo = (card: WithId<NameCard>) => {
     return mutatingCard?.id === card.id ? mutatingCard : card;
   };
 
+  const onToggleEdit = (card: WithId<NameCard>) => {
+    toggleEdit(card);
+  };
   const onConfirmUpdate = async () => {
     if (!mutatingCard) return;
     if (state === "adding") {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...cardInfo } = mutatingCard;
       await onAdd(cardInfo);
-      stopEdit();
-      containerRef.current?.scrollBy({ left: 100 });
+      await stopEdit();
+      /**
+       * Move the view to the new card once the user stops seeing the add card form
+       */
+      setTimeout(() => {
+        const nameCardElements = document.querySelectorAll(
+          '[data-testid="name-card"]'
+        );
+        if (!nameCardElements) return;
+        nameCardElements[nameCardElements.length - 1].scrollIntoView();
+      }, 500);
       return;
     }
     await onUpdate(mutatingCard.id!, mutatingCard);
@@ -61,6 +79,7 @@ export const NameCardList = ({
   return (
     <>
       <div
+        data-testid="name-card-list"
         ref={containerRef}
         className={classNames(
           "relative flex flex-row flex-nowrap snap-x snap-mandatory scroll-smooth flex-1 items-stretch no-scrollbar touch-pan-x px-24 max-h-screen",
@@ -73,10 +92,10 @@ export const NameCardList = ({
             index={index}
             card={getCardInfo(card)}
             editing={mutatingCard?.id === card.id}
-            onToggleEdit={() => toggleEdit(card)}
+            onToggleEdit={withStepTutorial(() => onToggleEdit(card), 300)}
             onChange={mutate}
             onDelete={() => onDelete(card.id)}
-            onConfirmUpdate={onConfirmUpdate}
+            onConfirmUpdate={withStepTutorial(onConfirmUpdate, 300)}
             container={containerRef}
           />
         ))}
@@ -89,12 +108,14 @@ export const NameCardList = ({
               container={containerRef}
               index={0}
               editing
-              onConfirmUpdate={onConfirmUpdate}
+              onConfirmUpdate={withStepTutorial(onConfirmUpdate, 300)}
               onToggleEdit={stopEdit}
             />
           )}
         </AnimatePresence>
-        {state !== "adding" && <CreateNameCard onClick={add} />}
+        {state !== "adding" && (
+          <CreateNameCard onClick={withStepTutorial(add, 300)} />
+        )}
       </div>
       <motion.div
         animate={state !== "idle" ? "active" : "idle"}

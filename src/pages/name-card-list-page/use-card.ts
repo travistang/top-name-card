@@ -49,6 +49,7 @@ export const useCard = () => {
     onSuccess: (deletedId) => {
       mutate(cards?.filter((card) => card.id !== deletedId));
       toast.success("Name card deleted!");
+      document.querySelector('[data-testid="name-card"]')?.scrollIntoView();
     },
   });
 

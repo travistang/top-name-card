@@ -4,6 +4,7 @@ import { FormSection } from "../form-section";
 
 type Props = {
   label?: string;
+  testId?: string;
   explanation?: string;
   textArea?: boolean;
   type?: HTMLInputTypeAttribute;
@@ -16,6 +17,7 @@ type Props = {
 };
 export const TextInput = ({
   label,
+  testId,
   explanation,
   textArea,
   type,
@@ -40,6 +42,7 @@ export const TextInput = ({
             </span>
           )}
           <input
+            data-testid={testId}
             placeholder={placeholder}
             type={type}
             value={value}
