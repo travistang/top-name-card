@@ -19,10 +19,11 @@ export class NameCardStack extends cdk.Stack {
     props?: cdk.StackProps
   ) {
     super(scope, nameCardStackProps.stackName, props);
-    const { certificateArn, publicUrl } = nameCardStackProps;
+    const { certificateArn, publicUrl, stackName } = nameCardStackProps;
     // S3
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      bucketName: `top-name-card-s3-bucket-${stackName}`,
       autoDeleteObjects: true,
     });
 
