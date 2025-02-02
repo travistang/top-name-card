@@ -1,15 +1,13 @@
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useTour } from "@reactour/tour";
 import classNames from "classnames";
 import {
-  animate,
   HTMLMotionProps,
   motion,
   MotionValue,
   useDragControls,
 } from "framer-motion";
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useRef } from "react";
 import QRCode from "react-qr-code";
 import { IconButton } from "../../../../components/inputs/icon-button";
 import {
@@ -19,8 +17,8 @@ import {
   NameCard as NameCardType,
   WithId,
 } from "../../../../domain/name-card";
-import { TutorialStep } from "../../../../domain/tutorial/steps";
 import { useAnimation } from "./use-animation";
+import { useDeleteTutorial } from "./use-delete-tutorial";
 
 type NameCardProps = {
   container: RefObject<HTMLElement>;
@@ -39,26 +37,8 @@ export const NameCard = ({
   container,
 }: NameCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  /**
-   * TODO: Move this to its separate hook. Don't complicate the cards' logic!
-   */
-  const { currentStep, isOpen: isRunningTutorial } = useTour();
   const dragControls = useDragControls();
-  useEffect(() => {
-    if (
-      !isRunningTutorial ||
-      currentStep !== TutorialStep.ShowSwipeToDeleteAnimation
-    )
-      return;
-    setTimeout(() => {
-      if (!dragY) return;
-      animate(dragY, [0, -100, -100, -100, 0], {
-        duration: 1.5,
-        ease: "easeOut",
-      });
-    }, 800);
-  }, [dragY, currentStep, isRunningTutorial]);
-
+  useDeleteTutorial({ dragY });
   const { background, text: color } = NameCardCategoryColors[card.category];
   const { computeQRCodeValue = (value: string) => value } =
     NameCardInputSettings[card.category] ?? {};
