@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Sora";
+  src: local(Sora), url("/fonts/Sora.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
 body {
   @apply bg-white-dark dark:bg-slate-dark text-slate dark:text-white transition-colors duration-300;
   font-family: "Sora", serif;
