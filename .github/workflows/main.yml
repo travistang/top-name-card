@@ -1,9 +1,11 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Build and deploy
+# Workflow concerning the "after-push" of every commits on every branch
+# If the branch is not "main" or "develop", then we only build the artifact
+# If the branch is "develop", then we deploy the artifact on AWS using CDK
+# If the branch is "main", then we deploy it on GitHub pages
+name: Main workflow
 on:
-  # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["*"]
 
 # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
@@ -27,12 +29,11 @@ jobs:
       - name: Build
         run: npm run build
       - name: Upload artifact
-        if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/upload-artifact@v4
         with:
           name: build
           path: "./dist"
-  deploy:
+  deploy-to-github-pages:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: build
     runs-on: ubuntu-latest
@@ -54,3 +55,65 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+  create-staging:
+    if: ${{ github.ref == 'refs/heads/develop' }}
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    env:
+      BRANCH_NAME: ${{ github.ref_name }}
+      CDK_STACK_NAME: top-name-card-cdk-stack-${{ github.ref_name }}
+
+      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACM_ARN: ${{ secrets.AWS_ACM_ARN }}
+
+      DNS_UPDATE_ENDPOINT: ${{ secrets.DNS_UPDATE_ENDPOINT }}
+      DNS_UPDATE_TOKEN: ${{ secrets.DNS_UPDATE_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: ./dist
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: CDK Synth
+        run: |
+          cd infrastructure 
+          npm install
+          cdk synth
+
+      - name: CDK Deploy
+        run: |
+          cd infrastructure
+          npm install
+          cdk deploy --require-approval never --outputs-file cdk-output.json
+          echo "CLOUDFRONT_URL=$(jq -r '.["'$CDK_STACK_NAME'"].url' cdk-output.json)" >> $GITHUB_ENV
+      - name: Update DNS Record
+        run: |
+          curl -X POST $DNS_UPDATE_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $DNS_UPDATE_TOKEN" \
+            --data '{
+              "type":"CNAME",
+              "name":"'$BRANCH_NAME'.namecard",
+              "content":"'$CLOUDFRONT_URL'",
+              "proxied": false
+            }'

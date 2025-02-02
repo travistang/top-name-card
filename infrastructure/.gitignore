@@ -1,0 +1,6 @@
+.env
+cdk.out
+dist
+
+# no compiled files
+*.js

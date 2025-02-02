@@ -1,11 +1,5 @@
 import classNames from "classnames";
-import {
-  motion,
-  MotionValue,
-  useMotionValueEvent,
-  useTransform,
-} from "framer-motion";
-import { useState } from "react";
+import { motion } from "framer-motion";
 
 const rangeN = (n: number) =>
   Array(n)
@@ -13,35 +7,41 @@ const rangeN = (n: number) =>
     .map((_, i) => i);
 type Props = {
   numPages: number;
-  progress: MotionValue<number>;
+  page: number;
+  inactiveColor?: string;
+  activeColor?: string;
   className?: string;
 };
 
 type DotProps = {
   index: number;
-  interpolatedPage: MotionValue<number>;
+  inactiveColor?: string;
+  activeColor?: string;
+  isActive?: boolean;
 };
-const inView = (index: number, interpolatedIndex: number) => {
-  return index === Math.floor(interpolatedIndex);
-};
-const dotVariants = {
-  true: { scale: 2, backgroundColor: "#6366f1" },
-  false: { scale: 1, backgroundColor: "#ffffff" },
-};
-const Dot = ({ index, interpolatedPage }: DotProps) => {
-  const [isInView, setIsInView] = useState(
-    inView(index, interpolatedPage.get())
-  );
 
-  useMotionValueEvent(interpolatedPage, "change", (interpolatedPage) =>
-    setIsInView(inView(index, interpolatedPage))
-  );
+const dotVariants = ({
+  inactiveColor,
+  activeColor,
+}: {
+  inactiveColor: string;
+  activeColor: string;
+}) => ({
+  true: { scale: 2, backgroundColor: activeColor },
+  false: { scale: 1, backgroundColor: inactiveColor },
+});
 
+const Dot = ({
+  isActive,
+  inactiveColor = "#ffffff",
+  activeColor = "#6366f1",
+}: DotProps) => {
+  const variants = dotVariants({ inactiveColor, activeColor });
   return (
     <motion.div
-      variants={dotVariants}
-      animate={isInView ? "true" : "false"}
-      initial={dotVariants}
+      variants={variants}
+      animate={isActive ? "true" : "false"}
+      initial={variants}
       className="rounded-full w-1 h-1 mx-0.5"
       transition={{
         duration: 0.3,
@@ -49,11 +49,13 @@ const Dot = ({ index, interpolatedPage }: DotProps) => {
     />
   );
 };
-export const PaginationDots = ({ numPages, progress, className }: Props) => {
-  const interpolatedPage = useTransform(progress, (progress) => {
-    return progress * (numPages - 1);
-  });
-
+export const PaginationDots = ({
+  numPages,
+  page: activePage,
+  inactiveColor,
+  activeColor,
+  className,
+}: Props) => {
   if (!numPages) return null;
   return (
     <div
@@ -63,7 +65,13 @@ export const PaginationDots = ({ numPages, progress, className }: Props) => {
       )}
     >
       {rangeN(numPages).map((page) => (
-        <Dot key={page} index={page} interpolatedPage={interpolatedPage} />
+        <Dot
+          key={page}
+          index={page}
+          inactiveColor={inactiveColor}
+          activeColor={activeColor}
+          isActive={activePage === page}
+        />
       ))}
     </div>
   );

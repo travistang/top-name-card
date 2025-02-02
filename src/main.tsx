@@ -9,7 +9,7 @@ import "./index.css";
 const updateSW = registerSW({
   onRegisteredSW() {},
   onOfflineReady() {
-    toast.success("This app is up to date!😄");
+    toast.success("This app is up to date! 😄");
   },
 
   onNeedRefresh() {
