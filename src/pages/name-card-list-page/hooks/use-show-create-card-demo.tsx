@@ -14,10 +14,17 @@ export const useShowCreateCardDemo = (
   const { currentStep, isOpen: isRunningTutorial } = useTour();
   useEffect(() => {
     if (isRunningTutorial && currentStep === TutorialStep.ShowCreateCard) {
+      const moveDifference = window.innerWidth;
       const timeout = setTimeout(() => {
-        containerRef.current?.scrollBy({ left: 10, behavior: "smooth" });
+        containerRef.current?.scrollBy({
+          left: moveDifference,
+          behavior: "smooth",
+        });
         setTimeout(() => {
-          containerRef.current?.scrollBy({ left: -10, behavior: "smooth" });
+          containerRef.current?.scrollBy({
+            left: -moveDifference,
+            behavior: "smooth",
+          });
         }, 1000);
       }, 500);
       return () => clearTimeout(timeout);
