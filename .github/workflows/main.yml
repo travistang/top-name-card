@@ -1,3 +1,7 @@
+# Workflow concerning the "after-push" of every commits on every branch
+# If the branch is not "main" or "develop", then we only build the artifact
+# If the branch is "develop", then we deploy the artifact on AWS using CDK
+# If the branch is "main", then we deploy it on GitHub pages
 name: Main workflow
 on:
   push:

@@ -6,15 +6,20 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 
-export class StagingStack extends cdk.Stack {
+type NameCardStackProps = {
+  publicUrl: string;
+  certificateArn: string;
+  stackName: string;
+};
+
+export class NameCardStack extends cdk.Stack {
   constructor(
     scope: Construct,
-    id: string,
-    certificateArn: string,
+    nameCardStackProps: NameCardStackProps,
     props?: cdk.StackProps
   ) {
-    super(scope, id, props);
-
+    super(scope, nameCardStackProps.stackName, props);
+    const { certificateArn, publicUrl } = nameCardStackProps;
     // S3
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -26,20 +31,20 @@ export class StagingStack extends cdk.Stack {
      */
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(siteBucket);
 
-    // ACM
+    // ACM for test.namecard.travis.engineering
     const certificate = certificatemanager.Certificate.fromCertificateArn(
       this,
       "SiteCertificate",
       certificateArn
     );
 
-    // Create a CloudFront distribution using the S3 bucket as the origin
+    // Cloudfront distribution with S3 origin
     const distribution = new cloudfront.Distribution(this, "SiteDistribution", {
       defaultBehavior: {
         origin: s3Origin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
-      domainNames: ["test.namecard.travis.engineering"],
+      domainNames: [publicUrl],
       certificate,
       defaultRootObject: "index.html",
     });
