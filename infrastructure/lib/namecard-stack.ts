@@ -9,28 +9,24 @@ import { Construct } from "constructs";
 type NameCardStackProps = {
   publicUrl: string;
   certificateArn: string;
+  branchName: string;
   stackName: string;
 };
 
 export class NameCardStack extends cdk.Stack {
   constructor(
     scope: Construct,
-    nameCardStackProps: NameCardStackProps,
+    private nameCardStackProps: NameCardStackProps,
     props?: cdk.StackProps
   ) {
     super(scope, nameCardStackProps.stackName, props);
-    const { certificateArn, publicUrl, stackName } = nameCardStackProps;
+    const { certificateArn, branchName } = nameCardStackProps;
     // S3
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      bucketName: `top-name-card-s3-bucket-${stackName}`,
+      bucketName: `top-name-card-s3-bucket-${branchName}`,
       autoDeleteObjects: true,
     });
-
-    /**
-     * OAC Creation
-     */
-    const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(siteBucket);
 
     // ACM for test.namecard.travis.engineering
     const certificate = certificatemanager.Certificate.fromCertificateArn(
@@ -39,19 +35,18 @@ export class NameCardStack extends cdk.Stack {
       certificateArn
     );
 
+    /**
+     * S3 origin for CloudFront with OAC
+     */
+    const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(siteBucket);
+
     // Cloudfront distribution with S3 origin
-    const distribution = new cloudfront.Distribution(this, "SiteDistribution", {
-      defaultBehavior: {
-        origin: s3Origin,
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      },
-      domainNames: [publicUrl],
+    const distribution = this.createCloudFrontDistribution(
       certificate,
-      defaultRootObject: "index.html",
-    });
+      s3Origin
+    );
 
     // Deploy the built static files to the S3 bucket.
-    // Adjust the source path to where your static build output is located.
     new s3deploy.BucketDeployment(this, "DeployWebsite", {
       sources: [s3deploy.Source.asset("../dist")],
       destinationBucket: siteBucket,
@@ -59,8 +54,55 @@ export class NameCardStack extends cdk.Stack {
       distributionPaths: ["/*"],
     });
 
-    new cdk.CfnOutput(this, "DistributionDomainName", {
+    new cdk.CfnOutput(this, "url", {
       value: distribution.distributionDomainName,
+    });
+  }
+
+  /**
+   * Create CloudFront distribution, given the s3 origin and certificate for the custom domain. It also attaches request restriction rules for the distribution so that only requests with custom domain is allowed
+   * @param certificate: the certificate of the custom domain
+   * @param s3Origin: the s3 origin this distribution uses
+   * @returns cloudFront distribution
+   */
+  createCloudFrontDistribution(
+    certificate: cdk.aws_certificatemanager.ICertificate,
+    s3Origin: cdk.aws_cloudfront.IOrigin
+  ) {
+    return new cloudfront.Distribution(this, "SiteDistribution", {
+      defaultBehavior: {
+        origin: s3Origin,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        functionAssociations: [
+          {
+            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+            function: this.cloudFrontRequestRestriction(),
+          },
+        ],
+      },
+      domainNames: [this.nameCardStackProps.publicUrl],
+      certificate,
+      defaultRootObject: "index.html",
+    });
+  }
+  // CloudFront Function that blocks .cloudfront.net requests
+  cloudFrontRequestRestriction() {
+    return new cloudfront.Function(this, "BlockCloudFrontAccess", {
+      code: cloudfront.FunctionCode.fromInline(`
+          function handler(event) {
+            var request = event.request;
+            var headers = request.headers;
+
+            if (headers.host && headers.host.value.endsWith('.cloudfront.net')) {
+              return {
+                statusCode: 403,
+                statusDescription: "Forbidden",
+                body: ""
+              };
+            }
+            return request;
+          }
+        `),
     });
   }
 }

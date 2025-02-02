@@ -6,13 +6,15 @@ import { NameCardStack } from "./lib/namecard-stack";
 const account = process.env.AWS_ACCOUNT;
 const region = process.env.AWS_REGION!;
 const acmArn = process.env.AWS_ACM_ARN!; // the ARN of the HTTPS certificate pre-configured for the custom domain
-const branchName = process.env.BRANCH_NAME || "staging";
+const branchName = process.env.BRANCH_NAME || "";
+const stackName = process.env.CDK_STACK_NAME || "";
 
 const app = new cdk.App();
 const stackProps = {
-  publicUrl: "test.namecard.travis.engineering",
+  publicUrl: `${branchName}.namecard.travis.engineering`,
   certificateArn: acmArn,
-  stackName: `top-name-card-cdk-stack-${branchName}`,
+  branchName,
+  stackName,
 };
 new NameCardStack(app, stackProps, {
   env: { account, region },

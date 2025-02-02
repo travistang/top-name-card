@@ -62,9 +62,15 @@ jobs:
     environment:
       name: staging
     env:
+      BRANCH_NAME: ${{ github.ref_name }}
+      CDK_STACK_NAME: top-name-card-cdk-stack-${{ github.ref_name }}
+
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ACM_ARN: ${{ secrets.AWS_ACM_ARN }}
+
+      DNS_UPDATE_ENDPOINT: ${{ secrets.DNS_UPDATE_ENDPOINT }}
+      DNS_UPDATE_TOKEN: ${{ secrets.DNS_UPDATE_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -88,14 +94,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Run CDK Synth
+      - name: CDK Synth
         run: |
           cd infrastructure 
           npm install
           cdk synth
 
-      - name: Deploy CDK Stack
+      - name: CDK Deploy
         run: |
           cd infrastructure
           npm install
-          cdk deploy --require-approval never
+          cdk deploy --require-approval never --outputs-file cdk-output.json
+          echo "CLOUDFRONT_URL=$(jq -r '.["'$CDK_STACK_NAME'"].url' cdk-output.json)" >> $GITHUB_ENV
+      - name: Update DNS Record
+        run: |
+          curl -X POST $DNS_UPDATE_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $DNS_UPDATE_TOKEN" \
+            --data '{
+              "type":"CNAME",
+              "name":"'$BRANCH_NAME'.namecard",
+              "content":"'$CLOUDFRONT_URL'",
+              "proxied": false
+            }'
