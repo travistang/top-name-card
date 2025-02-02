@@ -194,7 +194,7 @@ export const steps: StepType[] = [
   },
   {
     // ShowCreateCard
-    selector: '[data-testid="name-card-list"]',
+    selector: '[data-testid="app"]',
     stepInteraction: true,
     disableActions: false,
     position: bottomOfScreen,
