@@ -1,8 +1,6 @@
 import { TourProvider, useTour } from "@reactour/tour";
 
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
-import { IconButton } from "../../../components/inputs/icon-button";
 import provider from "../../name-card/providers/local-storage-provider";
 import { TutorialPopup } from "../components/tutorial-popup";
 import { steps } from "../steps";
@@ -62,16 +60,14 @@ export const TutorialContextProvider = ({ children }: Props) => {
   return (
     <TourProvider
       prevButton={() => null}
-      showCloseButton
       disableDotsNavigation
       disableKeyboardNavigation
+      onClickClose={onCloseTutorial}
       components={{
-        Navigation: TutorialPopup,
-        Close: ({ onClick }) => (
-          <IconButton
-            onClick={onClick}
-            icon={faTimes}
-            className="absolute right-0 top-0 w-8 h-8 text-slate-800"
+        Navigation: (navigationProps) => (
+          <TutorialPopup
+            {...navigationProps}
+            onTutorialComplete={setTutorialSeen}
           />
         ),
       }}
@@ -84,8 +80,8 @@ export const TutorialContextProvider = ({ children }: Props) => {
           minWidth: window.innerWidth,
         }),
       }}
-      onClickClose={onCloseTutorial}
       steps={steps}
+      onClickMask={onCloseTutorial}
       showBadge={false}
       scrollSmooth
     >

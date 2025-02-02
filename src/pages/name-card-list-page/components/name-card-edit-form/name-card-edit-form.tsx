@@ -31,6 +31,9 @@ type Props = {
   confirmFormText?: string;
 };
 
+const FIRST_PAGE_INDEX = 0;
+const LAST_PAGE_INDEX = 3;
+
 const PHONE_NUMBER_CATEGORIES: NameCardCategory[] = [
   "phone-number",
   "whatsapp",
@@ -74,11 +77,20 @@ export const NameCardEditForm = ({
 
   const toNextSession = (direction: "left" | "right") => () => {
     const nextPage = direction === "left" ? currentPage - 1 : currentPage + 1;
-    const clampedNextPage = Math.max(0, Math.min(nextPage, 3));
+    const clampedNextPage = Math.max(
+      FIRST_PAGE_INDEX,
+      Math.min(nextPage, LAST_PAGE_INDEX)
+    );
     setCurrentPage(clampedNextPage);
     if (isRunningTutorial && currentStep === TutorialStep.ClickNextButton) {
       setCurrentStep(currentStep + 1);
     }
+  };
+  const shouldDisableNextButton = () => {
+    if (currentPage === LAST_PAGE_INDEX) return true;
+    if (shouldDisableSubmitButton && currentPage !== FIRST_PAGE_INDEX)
+      return true;
+    return false;
   };
   const shouldDisableSubmitButton = !isNameCardValid(card);
   return (
@@ -86,15 +98,15 @@ export const NameCardEditForm = ({
       {/* Control items and pagination */}
       <div className="flex justify-between px-4 z-10 pointer-events-auto">
         <IconButton
-          disabled={currentPage === 0 || isRunningTutorial}
+          disabled={currentPage === FIRST_PAGE_INDEX || isRunningTutorial}
           onClick={toNextSession("left")}
           testId="edit-form-arrow-left"
           icon={faArrowLeft}
           className="w-12 z-10 h-8"
         />
-        <PaginationDots page={currentPage} numPages={4} />
+        <PaginationDots page={currentPage} numPages={LAST_PAGE_INDEX + 1} />
         <IconButton
-          disabled={currentPage === 3}
+          disabled={shouldDisableNextButton()}
           onClick={toNextSession("right")}
           testId="edit-form-arrow-right"
           icon={faArrowRight}
