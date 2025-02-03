@@ -7,13 +7,13 @@
 The **TOP Name Card** (part of Travis' Over-engineered Projects) aims to solve 2 problems in a similar fashion:
 
 - Many times I would like to share my contact in social events, however I would like to help filling in the contact info based on the nature of the contacts (business, casual, friends etc.) and I would like to save them the hustle of typing lots of info and making mistakes.
-- I would like to make a communication with someone far or close but behind a window (I know it sounded awkward, but believe me that happened to me before.) and I would like a set of fixed phrases to be displayed on my phone with a font as large as possible.
+- ~I would like to make a communication with someone far or close but behind a window (I know it sounded awkward, but believe me that happened to me before.) and I would like a set of fixed phrases to be displayed on my phone with a font as large as possible.~ Well I decided to not continue with this feature, since it is not really compatible with the idea of showing the name card itself. 🤷‍♂️
 
 This app solves these two problem by displaying QR Code, natural texts, or combination of both, according to the `Name cards` you defined in advance.
 
 ## How it works
 
-Before you are caught in situations where you need to share your contact / make a visual communication, create the `name cards` that are saved locally on the device by pressing the `+` button on the upper right corner.
+If you are a first time user of the app, simply open it follow the tutorial!
 
 There are different categories of `name cards` available and each differs by colors and display nature:
 
@@ -32,6 +32,12 @@ I know Whatsapp and instagram already provides QR code to share your own profile
 ## Where can I use this?
 
 I host the app with GitHub pages. You can use it on [https://travistang.github.io/top-name-card/](https://travistang.github.io/top-name-card/)
+
+## Staging environment
+
+I also used AWS CDK to create staging environment on the `develop` branch for learning purpose, which can be found at `develop.namecard.travis.engineering`. The site is hosted with S3 + Cloudfront and reflects the changes made on `develop` branch.
+
+I am also working on using CDK to deploy feature branches to its corresponding URL (e.g. feature-1.namecard.travis.engineering) but its a work in progress. Stay tuned!
 
 ## Roadmap
 
